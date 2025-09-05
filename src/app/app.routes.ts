@@ -69,10 +69,6 @@ export const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () => import('./features/admin/pages/orders/orders.component').then(m => m.OrdersComponent)
-      },
-      {
-        path: 'settings',
-        loadComponent: () => import('./features/admin/pages/settings/settings.component').then(m => m.SettingsComponent)
       }
     ]
   },

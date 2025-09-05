@@ -16,9 +16,5 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'orders',
     loadComponent: () => import('./pages/orders/orders.component').then(m => m.OrdersComponent)
-  },
-  {
-    path: 'settings',
-    loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)
   }
 ];

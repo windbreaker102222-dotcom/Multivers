@@ -52,10 +52,6 @@ import { SupabaseService } from '../../../../services/supabase.service';
             <h3><i class="fas fa-eye"></i> Voir la boutique</h3>
             <p>Aperçu côté client</p>
           </a>
-          <a routerLink="/admin/settings" class="action-card">
-            <h3><i class="fas fa-cog"></i> Paramètres</h3>
-            <p>Configurer l'apparence de la boutique</p>
-          </a>
         </div>
       </div>
 
