@@ -1,0 +1,11 @@
+{
+  "buildCommand": "ng build",
+  "outputDirectory": "dist/multivers",
+  "framework": "angular",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
