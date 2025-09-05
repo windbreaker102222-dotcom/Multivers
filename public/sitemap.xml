@@ -3,7 +3,7 @@
   <!-- Page d'accueil -->
   <url>
     <loc>https://multivers-shop.vercel.app/</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,7 +11,7 @@
   <!-- Page d'accueil alternative -->
   <url>
     <loc>https://multivers-shop.vercel.app/home</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -19,7 +19,7 @@
   <!-- Catalogue principal -->
   <url>
     <loc>https://multivers-shop.vercel.app/shop</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -27,14 +27,14 @@
   <!-- Pages d'authentification -->
   <url>
     <loc>https://multivers-shop.vercel.app/auth/login</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://multivers-shop.vercel.app/auth/register</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -42,14 +42,14 @@
   <!-- Exemples de pages produits (à mettre à jour avec vos vrais produits) -->
   <url>
     <loc>https://multivers-shop.vercel.app/shop/product/1</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://multivers-shop.vercel.app/shop/product/2</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -57,14 +57,14 @@
   <!-- Exemples de pages catégories (à mettre à jour avec vos vraies catégories) -->
   <url>
     <loc>https://multivers-shop.vercel.app/shop/category/1</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://multivers-shop.vercel.app/shop/category/2</loc>
-    <lastmod>2025-01-05</lastmod>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
