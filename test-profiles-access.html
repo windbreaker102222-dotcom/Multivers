@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Profiles Access</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { margin: 5px; padding: 10px 15px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test Profiles Table Access</h1>
+    
+    <div class="test-section info">
+        <h3>Configuration</h3>
+        <p>Make sure to update the Supabase URL and anon key below:</p>
+        <input type="text" id="supabaseUrl" placeholder="Your Supabase URL" style="width: 300px;">
+        <input type="text" id="supabaseKey" placeholder="Your Supabase Anon Key" style="width: 300px;">
+        <button onclick="initSupabase()">Initialize Supabase</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Authentication Test</h3>
+        <input type="email" id="testEmail" placeholder="test@example.com" value="admin@multivers.com">
+        <input type="password" id="testPassword" placeholder="password" value="admin123">
+        <button onclick="testSignUp()">Sign Up</button>
+        <button onclick="testSignIn()">Sign In</button>
+        <button onclick="testSignOut()">Sign Out</button>
+        <button onclick="getCurrentUser()">Get Current User</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Profiles Access Test</h3>
+        <button onclick="testProfilesAccess()">Test Profiles Table Access</button>
+        <button onclick="testGetUserRole()">Test Get User Role</button>
+        <button onclick="testCreateProfile()">Test Create Profile</button>
+    </div>
+
+    <div class="test-section">
+        <h3>RLS Policies Test</h3>
+        <button onclick="testRLSPolicies()">Test All RLS Policies</button>
+        <button onclick="testAdminFunctions()">Test Admin Functions</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        let supabase;
+
+        function initSupabase() {
+            const url = document.getElementById('supabaseUrl').value;
+            const key = document.getElementById('supabaseKey').value;
+            
+            if (!url || !key) {
+                logResult('Please enter Supabase URL and anon key', 'error');
+                return;
+            }
+
+            try {
+                supabase = window.supabase.createClient(url, key);
+                logResult('Supabase client initialized successfully', 'success');
+            } catch (error) {
+                logResult('Failed to initialize Supabase: ' + error.message, 'error');
+            }
+        }
+
+        async function testSignUp() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    logResult('Sign up error: ' + error.message, 'error');
+                } else {
+                    logResult('Sign up successful: ' + JSON.stringify(data, null, 2), 'success');
+                }
+            } catch (error) {
+                logResult('Sign up exception: ' + error.message, 'error');
+            }
+        }
+
+        async function testSignIn() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    logResult('Sign in error: ' + error.message, 'error');
+                } else {
+                    logResult('Sign in successful: ' + JSON.stringify(data, null, 2), 'success');
+                }
+            } catch (error) {
+                logResult('Sign in exception: ' + error.message, 'error');
+            }
+        }
+
+        async function testSignOut() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    logResult('Sign out error: ' + error.message, 'error');
+                } else {
+                    logResult('Sign out successful', 'success');
+                }
+            } catch (error) {
+                logResult('Sign out exception: ' + error.message, 'error');
+            }
+        }
+
+        async function getCurrentUser() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error) {
+                    logResult('Get user error: ' + error.message, 'error');
+                } else {
+                    logResult('Current user: ' + JSON.stringify(user, null, 2), 'info');
+                }
+            } catch (error) {
+                logResult('Get user exception: ' + error.message, 'error');
+            }
+        }
+
+        async function testProfilesAccess() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                // Test basic profiles table access
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .limit(5);
+
+                if (error) {
+                    logResult('Profiles access error: ' + error.message, 'error');
+                } else {
+                    logResult('Profiles access successful: ' + JSON.stringify(data, null, 2), 'success');
+                }
+            } catch (error) {
+                logResult('Profiles access exception: ' + error.message, 'error');
+            }
+        }
+
+        async function testGetUserRole() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    logResult('No authenticated user found', 'error');
+                    return;
+                }
+
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) {
+                    logResult('Get user role error: ' + error.message, 'error');
+                } else {
+                    logResult('User role: ' + JSON.stringify(data, null, 2), 'success');
+                }
+            } catch (error) {
+                logResult('Get user role exception: ' + error.message, 'error');
+            }
+        }
+
+        async function testCreateProfile() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    logResult('No authenticated user found', 'error');
+                    return;
+                }
+
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .upsert({
+                        id: user.id,
+                        email: user.email,
+                        role: 'client',
+                        full_name: 'Test User'
+                    })
+                    .select();
+
+                if (error) {
+                    logResult('Create profile error: ' + error.message, 'error');
+                } else {
+                    logResult('Create profile successful: ' + JSON.stringify(data, null, 2), 'success');
+                }
+            } catch (error) {
+                logResult('Create profile exception: ' + error.message, 'error');
+            }
+        }
+
+        async function testRLSPolicies() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            const tests = [
+                { name: 'Categories', table: 'categories' },
+                { name: 'Products', table: 'products' },
+                { name: 'Orders', table: 'orders' }
+            ];
+
+            for (const test of tests) {
+                try {
+                    const { data, error } = await supabase
+                        .from(test.table)
+                        .select('*')
+                        .limit(3);
+
+                    if (error) {
+                        logResult(`${test.name} RLS test error: ${error.message}`, 'error');
+                    } else {
+                        logResult(`${test.name} RLS test successful: ${data.length} records`, 'success');
+                    }
+                } catch (error) {
+                    logResult(`${test.name} RLS test exception: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function testAdminFunctions() {
+            if (!supabase) {
+                logResult('Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                // Test the get_user_role function
+                const { data, error } = await supabase.rpc('get_user_role');
+
+                if (error) {
+                    logResult('Admin function test error: ' + error.message, 'error');
+                } else {
+                    logResult('Admin function test successful: ' + JSON.stringify(data, null, 2), 'success');
+                }
+            } catch (error) {
+                logResult('Admin function test exception: ' + error.message, 'error');
+            }
+        }
+
+        function logResult(message, type) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: <pre>${message}</pre>`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+    </script>
+</body>
+</html>
