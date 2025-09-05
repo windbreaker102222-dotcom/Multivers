@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://multivers-shop.vercel.app/sitemap.xml
+
+# Disallow admin pages from indexing
+Disallow: /admin/
+
+# Allow all other pages
+Allow: /shop/
+Allow: /auth/
+Allow: /home/
+
+# Crawl delay (optional)
+Crawl-delay: 1
