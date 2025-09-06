@@ -19,6 +19,20 @@ import { Product, Category } from '../../../../models/database.types';
         </button>
       </header>
 
+      <div class="search-section">
+        <div class="search-box">
+          <input 
+            type="text" 
+            class="search-input" 
+            [(ngModel)]="searchQuery"
+            placeholder="Rechercher un produit..."
+            (keyup.enter)="performSearch()">
+          <button class="search-btn" (click)="performSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
       @if (showAddForm) {
         <div class="add-product-form">
           <h2>{{ editingProduct ? 'Modifier' : 'Ajouter' }} un produit</h2>
@@ -119,10 +133,10 @@ import { Product, Category } from '../../../../models/database.types';
       }
 
       <div class="products-list">
-        <h2>Liste des produits ({{ products.length }})</h2>
-        @if (products.length > 0) {
+        <h2>Liste des produits ({{ filteredProducts.length }})</h2>
+        @if (filteredProducts.length > 0) {
           <div class="products-grid">
-            @for (product of products; track product.id) {
+            @for (product of filteredProducts; track product.id) {
               <div class="product-card">
                 <div class="product-image">
                   @if (product.image_url) {
@@ -457,6 +471,47 @@ import { Product, Category } from '../../../../models/database.types';
         grid-template-columns: 1fr;
       }
     }
+
+    .search-section {
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      display: flex;
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background: transparent;
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .search-btn {
+      padding: 1rem 1.5rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .search-btn:hover {
+      background: var(--color-primary-dark);
+    }
   `]
 })
 export class ProductsComponent implements OnInit {
@@ -467,6 +522,21 @@ export class ProductsComponent implements OnInit {
   isLoading = false;
   selectedFile: File | null = null;
   originalFileSize: number = 0;
+  searchQuery = '';
+
+  get filteredProducts(): Product[] {
+    if (!this.searchQuery.trim()) {
+      return this.products;
+    }
+    
+    const query = this.searchQuery.toLowerCase();
+    return this.products.filter(product => 
+      product.name.toLowerCase().includes(query) ||
+      (product.description && product.description.toLowerCase().includes(query)) ||
+      (product.category?.name && product.category.name.toLowerCase().includes(query)) ||
+      (Array.isArray(product.tags) && product.tags.some(tag => tag.toLowerCase().includes(query)))
+    );
+  }
 
   productData = {
     name: '',
@@ -659,5 +729,10 @@ export class ProductsComponent implements OnInit {
       stock_quantity: 0,
       tags: ''
     };
+  }
+
+  performSearch() {
+    // La recherche est déjà gérée par le getter filteredProducts
+    // Cette méthode peut être utilisée pour des actions supplémentaires si nécessaire
   }
 }

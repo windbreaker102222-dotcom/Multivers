@@ -59,10 +59,13 @@ import { Category, Product } from '../../../../models/database.types';
                     }
                   </h2>
                   <div class="breadcrumb">
-                    <span>Accueil</span>
+                    <a routerLink="/home">Accueil</a>
                     <i class="fas fa-chevron-right"></i>
-                    <span>Catalogue</span>
-                    @if (selectedCategory) {
+                    <a (click)="resetCatalog()">Catalogue</a>
+                    @if (searchTerm) {
+                      <i class="fas fa-chevron-right"></i>
+                      <span>Recherche : "{{ searchTerm }}"</span>
+                    } @else if (selectedCategory) {
                       <i class="fas fa-chevron-right"></i>
                       <span>{{ getCategoryName(selectedCategory) }}</span>
                     }
@@ -431,6 +434,17 @@ import { Category, Product } from '../../../../models/database.types';
       gap: 0.5rem;
       font-size: 0.875rem;
       color: var(--color-text-muted);
+    }
+
+    .breadcrumb a {
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
     }
 
     .breadcrumb span:last-child {
@@ -890,6 +904,15 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       console.warn('Erreur lors du comptage des produits par catégorie:', error);
       return 0;
     }
+  }
+
+  resetCatalog() {
+    this.selectedCategory = null;
+    this.searchTerm = '';
+    this.featuredProducts = this.allProducts;
+    
+    // Nettoyer l'URL des paramètres de recherche
+    window.history.replaceState({}, '', '/shop');
   }
 
   filterByCategory(categoryId: string | null) {

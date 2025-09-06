@@ -59,12 +59,12 @@ import { Category, Product } from '../../../../models/database.types';
     }
 
     .breadcrumb {
-      color: #666;
+      color: var(--color-text-muted);
       margin-bottom: 1rem;
     }
 
     .breadcrumb a {
-      color: #667eea;
+      color: var(--color-primary);
       text-decoration: none;
     }
 
@@ -74,7 +74,7 @@ import { Category, Product } from '../../../../models/database.types';
 
     .category-header h1 {
       font-size: 2.5rem;
-      color: #333;
+      color: var(--color-text);
       margin-bottom: 0.5rem;
     }
 
@@ -85,10 +85,10 @@ import { Category, Product } from '../../../../models/database.types';
     }
 
     .product-card {
-      background: white;
+      background: var(--color-surface);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-card);
       transition: transform 0.3s ease;
       text-decoration: none;
       color: inherit;
@@ -100,7 +100,7 @@ import { Category, Product } from '../../../../models/database.types';
 
     .product-image {
       height: 250px;
-      background: #f5f5f5;
+      background: var(--color-background-alt);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -113,7 +113,7 @@ import { Category, Product } from '../../../../models/database.types';
     }
 
     .no-image {
-      color: #999;
+      color: var(--color-text-muted);
       font-style: italic;
     }
 
@@ -124,17 +124,18 @@ import { Category, Product } from '../../../../models/database.types';
     .product-info h3 {
       margin: 0 0 0.5rem 0;
       font-size: 1.2rem;
+      color: var(--color-text);
     }
 
     .product-price {
       font-size: 1.5rem;
       font-weight: bold;
-      color: #667eea;
+      color: var(--color-primary);
       margin: 0.5rem 0;
     }
 
     .product-description {
-      color: #666;
+      color: var(--color-text-muted);
       line-height: 1.5;
       margin: 0;
     }
@@ -143,11 +144,11 @@ import { Category, Product } from '../../../../models/database.types';
       grid-column: 1 / -1;
       text-align: center;
       padding: 3rem;
-      color: #666;
+      color: var(--color-text-muted);
     }
 
     .back-link {
-      color: #667eea;
+      color: var(--color-primary);
       text-decoration: none;
       font-weight: 500;
     }
@@ -159,7 +160,7 @@ import { Category, Product } from '../../../../models/database.types';
     .loading {
       text-align: center;
       padding: 3rem;
-      color: #666;
+      color: var(--color-text-muted);
     }
   `]
 })

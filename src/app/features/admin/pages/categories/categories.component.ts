@@ -17,6 +17,20 @@ import { Category, Product } from '../../../../models/database.types';
         </button>
       </header>
 
+      <div class="search-section">
+        <div class="search-box">
+          <input 
+            type="text" 
+            class="search-input" 
+            [(ngModel)]="searchQuery"
+            placeholder="Rechercher une catégorie..."
+            (keyup.enter)="performSearch()">
+          <button class="search-btn" (click)="performSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
       @if (showAddForm) {
         <div class="add-category-form">
           <h2>{{ editingCategory ? 'Modifier' : 'Ajouter' }} une catégorie</h2>
@@ -56,10 +70,10 @@ import { Category, Product } from '../../../../models/database.types';
       }
 
       <div class="categories-list">
-        <h2>Liste des catégories ({{ categories.length }})</h2>
-        @if (categories.length > 0) {
+        <h2>Liste des catégories ({{ filteredCategories.length }})</h2>
+        @if (filteredCategories.length > 0) {
           <div class="categories-grid">
-            @for (category of categories; track category.id) {
+            @for (category of filteredCategories; track category.id) {
               <div class="category-card">
                 <div class="category-info">
                   <h3>{{ category.name }}</h3>
@@ -294,6 +308,47 @@ import { Category, Product } from '../../../../models/database.types';
         grid-template-columns: 1fr;
       }
     }
+
+    .search-section {
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      display: flex;
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background: transparent;
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .search-btn {
+      padding: 1rem 1.5rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .search-btn:hover {
+      background: var(--color-primary-dark);
+    }
   `]
 })
 export class CategoriesComponent implements OnInit {
@@ -302,12 +357,25 @@ export class CategoriesComponent implements OnInit {
   showAddForm = false;
   editingCategory: Category | null = null;
   isLoading = false;
+  searchQuery = '';
 
   categoryData = {
     name: '',
     description: '',
     is_active: true
   };
+
+  get filteredCategories(): Category[] {
+    if (!this.searchQuery.trim()) {
+      return this.categories;
+    }
+    
+    const query = this.searchQuery.toLowerCase();
+    return this.categories.filter(category => 
+      category.name.toLowerCase().includes(query) ||
+      (category.description && category.description.toLowerCase().includes(query))
+    );
+  }
 
   constructor(private supabaseService: SupabaseService) {}
 
@@ -394,5 +462,10 @@ export class CategoriesComponent implements OnInit {
 
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('fr-FR');
+  }
+
+  performSearch() {
+    // La recherche est déjà gérée par le getter filteredCategories
+    // Cette méthode peut être utilisée pour des actions supplémentaires si nécessaire
   }
 }

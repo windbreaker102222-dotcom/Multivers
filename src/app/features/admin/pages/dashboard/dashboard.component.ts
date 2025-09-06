@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { SupabaseService } from '../../../../services/supabase.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   template: `
     <div class="dashboard-container">
       <header class="dashboard-header">
@@ -35,19 +36,23 @@ import { SupabaseService } from '../../../../services/supabase.service';
 
       <div class="quick-actions">
         <h2>Actions rapides</h2>
+        
         <div class="actions-grid">
           <a routerLink="/admin/products" class="action-card">
             <h3><i class="fas fa-shopping-bag"></i> Gérer les produits</h3>
             <p>Ajouter, modifier ou supprimer des produits</p>
           </a>
+          
           <a routerLink="/admin/categories" class="action-card">
             <h3><i class="fas fa-folder"></i> Gérer les catégories</h3>
             <p>Organiser vos produits par catégories</p>
           </a>
+          
           <a routerLink="/admin/orders" class="action-card">
             <h3><i class="fas fa-clipboard-list"></i> Voir les commandes</h3>
             <p>Suivre et traiter les commandes clients</p>
           </a>
+          
           <a routerLink="/shop" class="action-card">
             <h3><i class="fas fa-eye"></i> Voir la boutique</h3>
             <p>Aperçu côté client</p>
@@ -125,6 +130,7 @@ import { SupabaseService } from '../../../../services/supabase.service';
       margin: 0;
     }
 
+
     .actions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -136,9 +142,9 @@ import { SupabaseService } from '../../../../services/supabase.service';
       background: var(--color-background);
       padding: 2rem;
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-card);
       text-decoration: none;
-      color: inherit;
+      color: var(--color-text);
       transition: transform var(--transition-normal);
     }
 
@@ -236,10 +242,14 @@ export class DashboardComponent implements OnInit {
     pendingOrders: 0,
     totalOrders: 0
   };
+  
 
   recentOrders: any[] = [];
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(
+    private supabaseService: SupabaseService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
     await this.loadStats();
@@ -293,4 +303,5 @@ export class DashboardComponent implements OnInit {
       minute: '2-digit'
     });
   }
+
 }

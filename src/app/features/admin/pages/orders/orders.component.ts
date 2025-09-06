@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { SupabaseService } from '../../../../services/supabase.service';
 import { Order } from '../../../../models/database.types';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
     <div class="orders-container">
       <header class="orders-header">
@@ -17,6 +18,20 @@ import { Order } from '../../../../models/database.types';
           <span class="stat completed">{{ getCompletedCount() }} terminées</span>
         </div>
       </header>
+
+      <div class="search-section">
+        <div class="search-box">
+          <input 
+            type="text" 
+            class="search-input" 
+            [(ngModel)]="searchQuery"
+            placeholder="Rechercher une commande..."
+            (keyup.enter)="performSearch()">
+          <button class="search-btn" (click)="performSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
 
       <div class="filters">
         <button 
@@ -45,9 +60,9 @@ import { Order } from '../../../../models/database.types';
         </button>
       </div>
 
-      @if (filteredOrders.length > 0) {
+      @if (searchFilteredOrders.length > 0) {
         <div class="orders-list">
-          @for (order of filteredOrders; track order.id) {
+          @for (order of searchFilteredOrders; track order.id) {
             <div class="order-card">
               <div class="order-header">
                 <div class="order-product">
@@ -281,6 +296,47 @@ import { Order } from '../../../../models/database.types';
       border: 1px solid var(--color-border);
     }
 
+    .search-section {
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      display: flex;
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background: transparent;
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .search-btn {
+      padding: 1rem 1.5rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .search-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
     @media (max-width: 768px) {
       .order-header {
         flex-direction: column;
@@ -311,6 +367,23 @@ export class OrdersComponent implements OnInit {
   orders: Order[] = [];
   filteredOrders: Order[] = [];
   currentFilter: 'all' | 'pending' | 'contacted' | 'completed' = 'all';
+  searchQuery = '';
+
+  get searchFilteredOrders(): Order[] {
+    let filtered = this.filteredOrders;
+    
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(order => 
+        order.client_name.toLowerCase().includes(query) ||
+        order.client_phone.includes(query) ||
+        (order.product?.name && order.product.name.toLowerCase().includes(query)) ||
+        (order.client_message && order.client_message.toLowerCase().includes(query))
+      );
+    }
+    
+    return filtered;
+  }
 
   constructor(private supabaseService: SupabaseService) {}
 
@@ -383,5 +456,10 @@ export class OrdersComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  performSearch() {
+    // La recherche est déjà gérée par le getter searchFilteredOrders
+    // Cette méthode peut être utilisée pour des actions supplémentaires si nécessaire
   }
 }

@@ -34,6 +34,26 @@ import { FcfaPipe } from '../../../../pipes/currency.pipe';
             <p class="product-price">{{ product.price | fcfa }}</p>
             <p class="product-description">{{ product.description }}</p>
             
+            <div class="share-section">
+              <h3>Partager ce produit</h3>
+              <div class="share-buttons">
+                <button class="share-btn whatsapp" (click)="shareOnWhatsApp()">
+                  <i class="fab fa-whatsapp"></i>
+                  Partager sur WhatsApp
+                </button>
+                <button class="share-btn copy-link" (click)="copyProductLink()">
+                  <i class="fas fa-link"></i>
+                  Copier le lien
+                </button>
+              </div>
+              @if (linkCopied) {
+                <div class="copy-success">
+                  <i class="fas fa-check"></i>
+                  Lien copié dans le presse-papiers !
+                </div>
+              }
+            </div>
+
             <div class="order-section">
               <h3>Commander ce produit</h3>
               
@@ -127,6 +147,72 @@ import { FcfaPipe } from '../../../../pipes/currency.pipe';
       height: auto;
       border-radius: 12px;
       box-shadow: var(--shadow-md);
+    }
+
+    .share-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--color-surface);
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+    }
+
+    .share-section h3 {
+      margin: 0 0 1rem 0;
+      color: var(--color-text);
+      font-size: 1.2rem;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .share-btn.whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .share-btn.whatsapp:hover {
+      background: #1ea952;
+      transform: translateY(-1px);
+    }
+
+    .share-btn.copy-link {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .share-btn.copy-link:hover {
+      background: var(--color-primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .copy-success {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
     }
 
     .no-image {
@@ -269,6 +355,7 @@ import { FcfaPipe } from '../../../../pipes/currency.pipe';
 })
 export class ProductDetailComponent implements OnInit {
   product: Product | null = null;
+  linkCopied = false;
   orderData = {
     clientName: '',
     clientPhone: '',
@@ -304,6 +391,45 @@ export class ProductDetailComponent implements OnInit {
     );
     
     this.whatsappService.openWhatsApp(whatsappLink);
+  }
+
+  shareOnWhatsApp() {
+    if (!this.product) return;
+    
+    const productUrl = `${window.location.origin}/shop/product/${this.product.id}`;
+    const message = `Découvrez ce produit : ${this.product.name} - ${this.product.price} FCFA\n${productUrl}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
+  }
+
+  async copyProductLink() {
+    if (!this.product) return;
+    
+    const productUrl = `${window.location.origin}/shop/product/${this.product.id}`;
+    
+    try {
+      await navigator.clipboard.writeText(productUrl);
+      this.linkCopied = true;
+      
+      // Masquer le message après 3 secondes
+      setTimeout(() => {
+        this.linkCopied = false;
+      }, 3000);
+    } catch (err) {
+      // Fallback pour les navigateurs qui ne supportent pas l'API clipboard
+      const textArea = document.createElement('textarea');
+      textArea.value = productUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      this.linkCopied = true;
+      setTimeout(() => {
+        this.linkCopied = false;
+      }, 3000);
+    }
   }
 
   async orderWithDetails() {

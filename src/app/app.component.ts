@@ -14,7 +14,7 @@ import { filter } from 'rxjs/operators';
     <div class="app-container">
       <!-- Theme Toggle -->
       <button class="theme-toggle" (click)="toggleTheme()" [title]="'Basculer vers le thème ' + (currentTheme === 'light' ? 'sombre' : 'clair')">
-        {{ currentTheme === 'light' ? '🌙' : '☀️' }}
+        <i class="fas" [ngClass]="currentTheme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
       </button>
 
       <!-- Header -->
@@ -43,8 +43,12 @@ import { filter } from 'rxjs/operators';
           <nav class="nav-links">
             <div class="auth-section">
               <ng-container *ngIf="!isAuthenticated && !isAdminPage">
-                <a routerLink="/auth/login" class="btn btn-outline">Connexion</a>
-                <a routerLink="/auth/register" class="btn btn-primary">Inscription</a>
+                <button (click)="navigateToLogin()" class="btn btn-outline">
+                  <i class="fas fa-sign-in-alt"></i> Connexion
+                </button>
+                <button (click)="navigateToRegister()" class="btn btn-primary">
+                  <i class="fas fa-user-plus"></i> Inscription
+                </button>
               </ng-container>
               
               <ng-container *ngIf="isAuthenticated">
@@ -56,7 +60,9 @@ import { filter } from 'rxjs/operators';
                     <span class="user-email">{{ userEmail }}</span> 
                   </div>
                 </div>
-                <button (click)="logout()" class="btn btn-outline">Déconnexion</button>
+                <button (click)="logout()" class="btn btn-outline">
+                  <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
               </ng-container>
             </div>
           </nav>
@@ -513,6 +519,9 @@ export class AppComponent implements OnInit {
     // Vérifier l'authentification
     await this.checkAuthentication();
 
+    // Initialiser la visibilité du layout avec l'URL actuelle
+    this.updateLayoutVisibility(this.router.url);
+
     // Écouter les changements de route pour masquer header/footer sur certaines pages
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
@@ -550,6 +559,14 @@ export class AppComponent implements OnInit {
     this.router.navigate(['/shop'], { 
       queryParams: { search: this.searchQuery.trim() } 
     });
+  }
+
+  navigateToLogin() {
+    this.router.navigate(['/auth/login']);
+  }
+
+  navigateToRegister() {
+    this.router.navigate(['/auth/register']);
   }
 
   private updateLayoutVisibility(url: string) {
